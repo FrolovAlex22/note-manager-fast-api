@@ -1,0 +1,1 @@
+# note-manager-fast-api
