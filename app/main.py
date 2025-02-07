@@ -6,6 +6,7 @@ import uvicorn
 
 from database.database import create_models, delete_models
 from config.logging_settings import logging_config
+from tasks.router import router as router_tasks
 from users.router import router as router_users
 from config.config import settings
 
@@ -32,6 +33,7 @@ def home_page():
     return {"message": "Привет, все работает!"}
 
 
+app.include_router(router_tasks)
 app.include_router(router_users)
 
 

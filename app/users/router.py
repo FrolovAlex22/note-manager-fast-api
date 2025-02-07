@@ -2,7 +2,7 @@ import logging
 
 from fastapi import APIRouter, HTTPException, Response, status, Depends
 
-from users.dependencies import get_current_user
+from dependencies import get_current_user
 from database.models import User
 from users.auth import (
     authenticate_user,

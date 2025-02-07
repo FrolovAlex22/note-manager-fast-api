@@ -67,6 +67,12 @@ logging_config = {
                 "stdout", "stderr", "warning_file", "error_file"
             ]
         },
+        "tasks.router": {
+            "level": "INFO",
+            "handlers": [
+                "stdout", "stderr", "warning_file", "error_file"
+            ]
+        },
         "main": {
             "level": "INFO",
             "formatter": "default",
