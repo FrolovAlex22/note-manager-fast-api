@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from filters import TaskFilter
 from dao.base import BaseDAO
 from database.database import sessionmanager
 from database.models import Task
@@ -30,9 +31,7 @@ class TasksDAO(BaseDAO):
     @classmethod
     async def update(cls, updarted_task: dict, task_id: int):
         async with sessionmanager.session() as session:
-            # print(updarted_task)
             obj = select(cls.model).where(cls.model.id == task_id)
-            # print(obj)
             result = await session.execute(obj)
             db_task = result.scalar_one_or_none()
             print(type(db_task))
@@ -43,9 +42,11 @@ class TasksDAO(BaseDAO):
             return db_task
 
     @classmethod
-    async def find_all_by_user(cls, user_id: int):
+    async def find_all_by_user(cls, user_id: int, filter: TaskFilter):
         async with sessionmanager.session() as session:
             query = select(cls.model).where(cls.model.owner_id == user_id)
+            if filter:
+                query = query.sort(query)
             result = await session.execute(query)
             return result.scalars().all()
 

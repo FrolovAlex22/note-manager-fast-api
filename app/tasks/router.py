@@ -1,7 +1,9 @@
 import logging
 
 from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi_filter import FilterDepends
 
+from filters import TaskFilter
 from dependencies import get_current_user
 from tasks.dao import TasksDAO
 from tasks.schemas import TaskCreate, TaskResponse, TaskUpdate
@@ -42,9 +44,12 @@ async def create_task(
         status_code=status.HTTP_200_OK,
         response_model=list[TaskResponse])
 async def get_my_tasks(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    task_filter: TaskFilter = FilterDepends(TaskFilter)
 ):
-    tasks = await TasksDAO.find_all_by_user(user_id=current_user.id)
+    tasks = await TasksDAO.find_all_by_user(
+        user_id=current_user.id, filter=task_filter
+    )
     if tasks is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Добавьте задачи"
