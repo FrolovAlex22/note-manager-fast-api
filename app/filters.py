@@ -1,18 +1,13 @@
-from datetime import datetime
+from datetime import date, datetime
 from fastapi_filter.contrib.sqlalchemy import Filter
 
-from typing import Optional
-
-from pydantic import Field
 from database.models import Task
 
 
 class TaskFilter(Filter):
-    title__like: Optional[list[str]] = Field(alias="titles")
-    created_at__gte: Optional[str] = Field(alias="created_at")
+    title__like: str | None = None
+    created_at: datetime | None = None
+    order_by: list[str] | None = None
 
     class Constants(Filter.Constants):
         model = Task
-
-    class Config:
-        populate_by_name = True

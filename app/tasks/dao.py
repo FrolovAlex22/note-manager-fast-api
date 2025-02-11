@@ -1,4 +1,6 @@
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
+
 from filters import TaskFilter
 from dao.base import BaseDAO
 from database.database import sessionmanager
@@ -12,7 +14,8 @@ class TasksDAO(BaseDAO):
     async def find_one_by_id_and_user(cls, task_id: int, user_id: int):
         async with sessionmanager.session() as session:
             query = (
-                select(cls.model).where(cls.model.owner_id == user_id, cls.model.id == task_id)
+                select(cls.model)
+                .where(cls.model.owner_id == user_id, cls.model.id == task_id)
             )
             result = await session.execute(query)
             return result.scalar_one_or_none()
@@ -46,7 +49,8 @@ class TasksDAO(BaseDAO):
         async with sessionmanager.session() as session:
             query = select(cls.model).where(cls.model.owner_id == user_id)
             if filter:
-                query = query.sort(query)
+                query = filter.filter(query)
+                query = filter.sort(query)
             result = await session.execute(query)
             return result.scalars().all()
 

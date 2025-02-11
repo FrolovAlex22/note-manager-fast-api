@@ -47,15 +47,18 @@ async def get_my_tasks(
     current_user: User = Depends(get_current_user),
     task_filter: TaskFilter = FilterDepends(TaskFilter)
 ):
-    tasks = await TasksDAO.find_all_by_user(
-        user_id=current_user.id, filter=task_filter
-    )
-    if tasks is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Добавьте задачи"
+    try:
+        tasks = await TasksDAO.find_all_by_user(
+            user_id=current_user.id, filter=task_filter
         )
-    logger.info(f"Пользователь: {current_user} получил список задач")
-    return tasks
+        if tasks is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Добавьте задачи"
+            )
+        logger.info(f"Пользователь: {current_user} получил список задач")
+        return tasks
+    except Exception as e:
+        logger.info(f"При получении списка задач произошла ошибка: {e}")
 
 
 @router.get("/{task_id}", response_model=TaskResponse)

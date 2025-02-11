@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from pydantic import BaseModel, Field
 
 
@@ -19,3 +20,4 @@ class TaskResponse(BaseModel):
     title: str
     description: str
     completed: bool
+    created_at: datetime
